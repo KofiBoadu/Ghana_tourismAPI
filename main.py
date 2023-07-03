@@ -1,19 +1,25 @@
 from flask import Flask 
 from flask_sqlalchemy import SQLAlchemy
-from flask import request, jsonify
+
+
 
 app= Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///attractions.db'
 db= SQLAlchemy(app)
 
 
+def initialize_routes():
+    from routes import create_attraction, get_attractions
+    app.add_url_rule('/attractions', view_func=create_attraction, methods=['POST'])
+    app.add_url_rule('/attractions', view_func=get_attractions, methods=['GET'])
 
 
 
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # create the database tables
+    initialize_routes()
+    for rule in app.url_map.iter_rules():
+        print(rule)
 
-# @app.route('/attractions',methods=['POST'])
-# def create_attraction():
-#     data= request.get_json()
-
-#     #create a new attraction object 
-#     new_attraction= Attraction
+    app.run(debug=True)
