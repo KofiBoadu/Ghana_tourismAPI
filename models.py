@@ -1,7 +1,10 @@
-from main import db 
+from database import db
+import json
 
 
 class Attraction(db.Model):
+
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100), nullable=False)
@@ -12,10 +15,17 @@ class Attraction(db.Model):
     entry_fees = db.Column(db.Float)
     website = db.Column(db.String(200))
     contact_info = db.Column(db.String(200))
+
     
+    def set_contact_info(self, contact_info):
+            self.contact_info = json.dumps(contact_info)
+
+    def get_contact_info(self):
+        return json.loads(self.contact_info) if self.contact_info else {}
 
 
     def convert_to_dict(self):
+
 
         return {
             "id":self.id,
@@ -27,5 +37,5 @@ class Attraction(db.Model):
             "opening_hours":self.opening_hours,
             "entry_fees": self.entry_fees,
             "website": self.website,
-            "contact_info": self.contact_info
+            "contact_info": self.get_contact_info()
         }
